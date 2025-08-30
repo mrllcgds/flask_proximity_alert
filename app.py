@@ -8,9 +8,10 @@ CORS(app)
 @app.route('/check_proximity', methods=['POST'])
 def check_proximity():
     data = request.get_json()
+
     warehouse_coords = tuple(data['warehouse'])  # [lat, lng]
     delivery_coords = tuple(data['delivery'])    # [lat, lng]
-    radius = data.get('radius', 250)             # in meters
+    radius = float(data.get('radius', 250))
 
     distance = geodesic(warehouse_coords, delivery_coords).meters
     is_within_range = distance <= radius
@@ -19,6 +20,7 @@ def check_proximity():
         'distance': round(distance, 2),
         'within_range': is_within_range
     })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
